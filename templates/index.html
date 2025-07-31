@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>GitHub DevFinder</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
+</head>
+
+<body>
+  <div class="card">
+    <header>
+      <div class="logo">
+        <i class="fa-solid fa-rocket"></i>
+        <h1>GitHub DevFinder</h1>
+      </div>
+      <form method="POST">
+        <input type="text" name="username" placeholder="Enter GitHub username" required>
+        <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+      </form>
+    </header>
+
+    {% if searched %}
+            {% if user_data %}
+                <hr>
+                <div class="profile-row">
+                    <img src="{{ user_data.avatar_url }}" alt="Avatar" width="120">
+                    <div class="profile-info">
+                        <h2>{{ user_data.login }}</h2>
+                        <a href="{{ user_data.html_url }}" class="profile_button" target="_blank"><i class="fa-brands fa-github">&nbsp;&nbsp;</i>View on GitHub</a>
+                    </div>
+                    </div>
+                <p><strong><strong><i class="fa-solid fa-signature"></i>&nbsp;&nbsp;Name:</strong> {{ user_data.name or "N/A" }}</p>
+                <p><i class="fa-solid fa-clipboard"></i>&nbsp;&nbsp;Bio:</strong> {{ user_data.bio or "N/A" }}</p>
+                <p><strong><i class="fa-solid fa-building"></i>&nbsp;&nbsp;Company:</strong> {{ user_data.company or "N/A" }}</p>
+                </i><p><strong><i class="fa-solid fa-location-dot"></i>&nbsp;&nbsp;Location:</strong> {{ user_data.location or "N/A" }}</p>
+                <p><strong><i class="fa-solid fa-box-open"></i>&nbsp;&nbsp;Public Repos:</strong> {{ user_data.public_repos }}</p>
+                <p><strong><i class="fa-solid fa-users"></i>&nbsp;&nbsp;Followers:</strong> {{ user_data.followers }}</p>
+                <p><strong><i class="fa-regular fa-handshake"></i>&nbsp;&nbsp;Following:</strong> {{ user_data.following }}</p>
+                <hr>
+                    {% if chart_html %}
+                    <div class="chart">
+                      <h2 class="chart-title">Most used languages</h2>
+                      {{ chart_html|safe }}
+                  {% endif %}
+                  
+                </div>
+            {% else %}
+            <p>User not found.</p>
+            {% endif %}
+        {% endif %}
+    </div>
+  </div>
+</body>
+</html>
