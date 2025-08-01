@@ -130,5 +130,4 @@ def get_user_event_createdat(username):
 
     
 def calculate_event_stats(username):
-    #this is for test push and pull form laptop 
     pass
