@@ -146,4 +146,139 @@ def get_user_event_createdat(username):
 
     
 def calculate_event_stats(username):
-    pass
+    event_types = analyze_user_event_types(username)    # {"PushEvent": 15, "WatchEvent": 7}
+    time_data = get_user_event_createdat(username)      # {"hours": {14: 8, 18: 5}, "days": {...}}
+    
+    if event_types is None or time_data is None:
+        return None
+    #=================================================Data-Calculation================================================
+    # Basic max values
+    most_common_event = max(event_types, key=event_types.get)           # "PushEvent"
+    max_event_count = max(event_types.values())                        # 15
+    most_active_hour = max(time_data["hours"], key=time_data["hours"].get)     # 14
+    most_active_day = max(time_data["days"], key=time_data["days"].get)        # "Saturday"
+    most_active_month = max(time_data["months"], key=time_data["months"].get)  # "July"
+    
+    # Calculate totals and percentages
+    total_events = sum(event_types.values())
+    total_weekend = time_data["days"].get("Saturday", 0) + time_data["days"].get("Sunday", 0)
+    total_weekday = sum(time_data["days"].get(day, 0) for day in ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"])
+    
+    # Event type percentages
+    push_percentage = event_types.get("PushEvent", 0) / total_events * 100 if total_events > 0 else 0
+    watch_percentage = event_types.get("WatchEvent", 0) / total_events * 100 if total_events > 0 else 0
+    create_percentage = event_types.get("CreateEvent", 0) / total_events * 100 if total_events > 0 else 0
+    issues_percentage = event_types.get("IssuesEvent", 0) / total_events * 100 if total_events > 0 else 0
+    pr_percentage = event_types.get("PullRequestEvent", 0) / total_events * 100 if total_events > 0 else 0
+    
+    # Weekend percentage
+    weekend_percentage = total_weekend / total_events * 100 if total_events > 0 else 0
+    weekday_percentage = total_weekday / total_events * 100 if total_events > 0 else 0
+    
+    # Mid-week activity (Tuesday-Thursday)
+    midweek_activity = sum(time_data["days"].get(day, 0) for day in ["Tuesday", "Wednesday", "Thursday"])
+    
+    # Time-specific activity counts
+    midnight_activity = sum(time_data["hours"].get(hour, 0) for hour in [0, 1, 2, 3])
+    coffee_hour_activity = sum(time_data["hours"].get(hour, 0) for hour in [9, 10, 11])
+    lunch_activity = sum(time_data["hours"].get(hour, 0) for hour in [12, 13, 14])
+    after_hours_activity = sum(time_data["hours"].get(hour, 0) for hour in range(18, 24))
+    #===================================================================================================================
+    # --- DEVELOPER TYPE LOGIC (Time-based) ---
+    if most_active_hour in [0, 1, 2, 3, 4, 5]:
+        developer_type = "Night Owl"
+    elif most_active_hour in [6, 7, 8]:
+        developer_type = "Early Bird"
+    elif most_active_hour in [9, 10, 11, 12, 13, 14, 15, 16, 17]:
+        developer_type = "9-to-5 Developer"
+    elif most_active_hour in [18, 19, 20, 21]:
+        developer_type = "Evening Coder"
+    elif most_active_hour in [22, 23]:
+        developer_type = "Late Night Coder"
+    else:
+        developer_type = "Varied Schedule"
+    
+    # --- DAY PATTERNS ---
+    if weekend_percentage >= 50:
+        day_pattern = "Weekend Warrior"
+    elif weekday_percentage >= 80:
+        day_pattern = "Weekday Focused"
+    elif most_active_day in ["Tuesday", "Wednesday", "Thursday"]:
+        day_pattern = "Mid-week Crusher"
+    elif most_active_day == "Monday":
+        day_pattern = "Monday Starter"
+    elif most_active_day == "Friday":
+        day_pattern = "Friday Finisher"
+    else:
+        day_pattern = "Balanced Schedule"
+    
+    # --- ACTIVITY LEVEL CATEGORIES ---
+    if total_events >= 50:
+        activity_level = "Coding Machine"
+    elif total_events >= 20:
+        activity_level = "Steady Developer"
+    elif total_events >= 5:
+        activity_level = "Casual Contributor"
+    else:
+        activity_level = "Occasional Coder"
+    
+    # --- EVENT TYPE DISTRIBUTION ---
+    if push_percentage >= 70:
+        event_style = "Heavy Committer"
+    elif watch_percentage + issues_percentage >= 50:
+        event_style = "Community Contributor"
+    elif create_percentage >= 30:
+        event_style = "Project Creator"
+    elif pr_percentage >= 30:
+        event_style = "Collaborator"
+    elif issues_percentage >= 30:
+        event_style = "Issue Hunter"
+    else:
+        event_style = "Balanced Contributor"
+    
+    # --- ENGAGEMENT LEVELS ---
+    if watch_percentage >= 40:
+        engagement_type = "GitHub Explorer"
+    elif push_percentage >= 80 and len(set(event_types.keys())) <= 2:
+        engagement_type = "Solo Developer"
+    elif pr_percentage + issues_percentage >= 40:
+        engagement_type = "Team Player"
+    else:
+        engagement_type = "Independent Developer"
+    
+    # --- SPECIAL/FUN PATTERNS ---
+    special_pattern = None
+    if midnight_activity >= total_events * 0.3:
+        special_pattern = "Midnight Debugger"
+    elif coffee_hour_activity >= total_events * 0.3:
+        special_pattern = "Coffee Hour Coder"
+    elif lunch_activity >= total_events * 0.25:
+        special_pattern = "Lunch Break Builder"
+    elif after_hours_activity >= total_events * 0.4:
+        special_pattern = "After Hours Hacker"
+    elif weekend_percentage >= 60:
+        special_pattern = "Weekend Wizard"
+    
+    # --- RETURN COMPREHENSIVE STATS, Επιστρέφει ένα μεγάλο dictionary με όλα τα analysis results ---
+    return {
+        "total_events": total_events,
+        "most_active_hour": most_active_hour,
+        "most_active_day": most_active_day,
+        "most_active_month": most_active_month,
+        "most_common_event": most_common_event,
+        "developer_type": developer_type,
+        "day_pattern": day_pattern,
+        "activity_level": activity_level,
+        "event_style": event_style,
+        "engagement_type": engagement_type,
+        "special_pattern": special_pattern,
+        "percentages": {
+            "weekend": round(weekend_percentage, 1),
+            "weekday": round(weekday_percentage, 1),
+            "push_events": round(push_percentage, 1),
+            "watch_events": round(watch_percentage, 1),
+            "create_events": round(create_percentage, 1),
+            "issues_events": round(issues_percentage, 1),
+            "pr_events": round(pr_percentage, 1)
+        }
+    }
