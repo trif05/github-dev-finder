@@ -112,7 +112,9 @@ def analyze_user_event_types(username):
 
 
 def get_user_event_createdat(username):
-    events = get_user_events(username)
+    events = get_user_events(username) 
+    #Παίρνω τα filtered events από τη function που φτιάξαμε
+    #Δημιουργώ dictionary με 3 κενά sub-dictionaries για counting
     time_counter={
         "hours": {},
         "days": {},
@@ -120,15 +122,28 @@ def get_user_event_createdat(username):
     }
     if events is None:
         return None
+    # παίρνω το timestamp από κάθε event
     for event in events:
-        event_type=event["created_at"] #2025-07-05T01:46:53Z
-        dt = datetime.fromisoformat(event_type.replace('Z', '+00:00'))
+        event_timestamp=event["created_at"] #2025-07-05T01:46:53Z
+        dt = datetime.fromisoformat(event_timestamp.replace('Z', '+00:00')) # Μετατρέπω string σε datetime object/Αλλάζω "Z" σε "+00:00" (GitHub format → Python format)
         hour = dt.hour
-        day_name = dt.strftime('%A')  
-        month_name = dt.strftime('%B')
+        day_name = dt.strftime('%A')  #%A = Full day name format
+        month_name = dt.strftime('%B') #%B = Full month name format
+        if hour in time_counter["hours"]:
+            time_counter["hours"][hour] += 1
+        else:
+            time_counter["hours"][hour] = 1 
+        if day_name in time_counter["days"]:
+            time_counter["days"][day_name] += 1
+        else:
+            time_counter["days"][day_name] = 1 
+        if month_name in time_counter["months"]:
+            time_counter["months"][month_name] += 1
+        else:
+            time_counter["months"][month_name] = 1
+    return time_counter
 
 
     
 def calculate_event_stats(username):
-    #this is for test push and pull form laptop 
     pass
