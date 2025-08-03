@@ -1,7 +1,7 @@
 import requests
 from datetime import datetime
 
-GITHUB_TOKEN = "YOUR_GITHUB_TOKEN"
+GITHUB_TOKEN = "YOUR_GITHUB_API_TOKEN"  
 HEADERS = {"Authorization": f"token {GITHUB_TOKEN}"}
 
 #Phase 1 
@@ -120,7 +120,7 @@ def get_user_event_createdat(username):
         "days": {},
         "months": {}
     }
-    if events is None:
+    if events is None or len(events) == 0:
         return None
     # παίρνω το timestamp από κάθε event
     for event in events:

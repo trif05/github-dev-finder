@@ -22,35 +22,215 @@
     </header>
 
     {% if searched %}
-            {% if user_data %}
-                <hr>
-                <div class="profile-row">
-                    <img src="{{ user_data.avatar_url }}" alt="Avatar" width="120">
-                    <div class="profile-info">
-                        <h2>{{ user_data.login }}</h2>
-                        <a href="{{ user_data.html_url }}" class="profile_button" target="_blank"><i class="fa-brands fa-github">&nbsp;&nbsp;</i>View on GitHub</a>
-                    </div>
-                    </div>
-                <p><strong><strong><i class="fa-solid fa-signature"></i>&nbsp;&nbsp;Name:</strong> {{ user_data.name or "N/A" }}</p>
-                <p><i class="fa-solid fa-clipboard"></i>&nbsp;&nbsp;Bio:</strong> {{ user_data.bio or "N/A" }}</p>
-                <p><strong><i class="fa-solid fa-building"></i>&nbsp;&nbsp;Company:</strong> {{ user_data.company or "N/A" }}</p>
-                </i><p><strong><i class="fa-solid fa-location-dot"></i>&nbsp;&nbsp;Location:</strong> {{ user_data.location or "N/A" }}</p>
-                <p><strong><i class="fa-solid fa-box-open"></i>&nbsp;&nbsp;Public Repos:</strong> {{ user_data.public_repos }}</p>
-                <p><strong><i class="fa-solid fa-users"></i>&nbsp;&nbsp;Followers:</strong> {{ user_data.followers }}</p>
-                <p><strong><i class="fa-regular fa-handshake"></i>&nbsp;&nbsp;Following:</strong> {{ user_data.following }}</p>
-                <hr>
-                    {% if chart_html %}
-                    <div class="chart">
-                      <h2 class="chart-title">Most used languages</h2>
-                      {{ chart_html|safe }}
-                  {% endif %}
-                  
-                </div>
-            {% else %}
-            <p>User not found.</p>
+      {% if user_data %}
+        <hr>
+        <div class="profile-row">
+          <img src="{{ user_data.avatar_url }}" alt="Avatar" width="120">
+          <div class="profile-info">
+            <h2>{{ user_data.login }}</h2>
+            <a href="{{ user_data.html_url }}" class="profile_button" target="_blank">
+              <i class="fa-brands fa-github">&nbsp;&nbsp;</i>View on GitHub
+            </a>
+            
+            <!-- Developer Insights Badges -->
+            {% if user_insights %}
+              <div class="badges-container">
+                {% if user_insights.developer_type %}
+                  <span class="badge badge-primary">🦉 {{ user_insights.developer_type }}</span>
+                {% endif %}
+                {% if user_insights.day_pattern %}
+                  <span class="badge badge-success">📅 {{ user_insights.day_pattern }}</span>
+                {% endif %}
+                {% if user_insights.activity_level %}
+                  <span class="badge badge-info">⚡ {{ user_insights.activity_level }}</span>
+                {% endif %}
+                {% if user_insights.special_pattern %}
+                  <span class="badge badge-warning">✨ {{ user_insights.special_pattern }}</span>
+                {% endif %}
+              </div>
             {% endif %}
-        {% endif %}
-    </div>
+          </div>
+        </div>
+
+        <p><strong><i class="fa-solid fa-signature"></i>&nbsp;&nbsp;Name:</strong> {{ user_data.name or "N/A" }}</p>
+        <p><strong><i class="fa-solid fa-clipboard"></i>&nbsp;&nbsp;Bio:</strong> {{ user_data.bio or "N/A" }}</p>
+        <p><strong><i class="fa-solid fa-building"></i>&nbsp;&nbsp;Company:</strong> {{ user_data.company or "N/A" }}</p>
+        <p><strong><i class="fa-solid fa-location-dot"></i>&nbsp;&nbsp;Location:</strong> {{ user_data.location or "N/A" }}</p>
+        <p><strong><i class="fa-solid fa-box-open"></i>&nbsp;&nbsp;Public Repos:</strong> {{ user_data.public_repos }}</p>
+        <p><strong><i class="fa-solid fa-users"></i>&nbsp;&nbsp;Followers:</strong> {{ user_data.followers }}</p>
+        <p><strong><i class="fa-regular fa-handshake"></i>&nbsp;&nbsp;Following:</strong> {{ user_data.following }}</p>
+
+        <hr>
+
+        <!-- Charts Grid Container -->
+        <div class="charts-grid">
+
+          <!-- Recent Activity Table -->
+          {% if user_events %}
+            <div class="chart">
+              <h2 class="chart-title"><i class="fa-solid fa-clock"></i> Recent Activity</h2>
+              <div class="table-container">
+                <table class="events-table">
+                  <thead>
+                    <tr>
+                      <th>Type</th>
+                      <th>Repository</th>
+                      <th>Date</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for event in user_events[:10] %}
+                      <tr>
+                        <td>
+                          <span class="event-type {{ event.type.lower() }}">
+                            {% if event.type == 'PushEvent' %}
+                              <i class="fa-solid fa-code-commit"></i> Push
+                            {% elif event.type == 'WatchEvent' %}
+                              <i class="fa-solid fa-star"></i> Star
+                            {% elif event.type == 'CreateEvent' %}
+                              <i class="fa-solid fa-plus-circle"></i> Create
+                            {% elif event.type == 'IssuesEvent' %}
+                              <i class="fa-solid fa-exclamation-circle"></i> Issue
+                            {% else %}
+                              <i class="fa-solid fa-circle"></i> {{ event.type.replace('Event', '') }}
+                            {% endif %}
+                          </span>
+                        </td>
+                        <td class="repo-name">{{ event.repo_name.split('/')[-1] }}</td>
+                        <td class="event-date">{{ event.created_at[:10] }}</td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          {% endif %}
+
+          <!-- Time Patterns -->
+          {% if user_createdat %}
+            <div class="chart">
+              <h2 class="chart-title"><i class="fa-solid fa-chart-line"></i> Activity Patterns</h2>
+              
+              <!-- Most Active Times -->
+              <div class="time-stats">
+                {% if user_createdat.hours %}
+                  {% set most_active_hour = user_createdat.hours.keys()|list|max %}
+                  <div class="stat-item">
+                    <span class="stat-label">Most Active Hour:</span>
+                    <span class="stat-value">{{ most_active_hour }}:00</span>
+                  </div>
+                {% endif %}
+                
+                {% if user_createdat.days %}
+                  {% set most_active_day = user_createdat.days.keys()|list|first %}
+                  <div class="stat-item">
+                    <span class="stat-label">Most Active Day:</span>
+                    <span class="stat-value">{{ most_active_day }}</span>
+                  </div>
+                {% endif %}
+              </div>
+
+              <!-- Activity Distribution -->
+              <div class="activity-distribution">
+                <h4>Weekly Distribution:</h4>
+                {% if user_createdat.days %}
+                  {% for day, count in user_createdat.days.items() %}
+                    <div class="day-bar">
+                      <span class="day-name">{{ day[:3] }}</span>
+                      <div class="bar-container">
+                        <div class="bar" style="width: {{ (count / user_createdat.days.values()|max * 100)|round }}%"></div>
+                      </div>
+                      <span class="day-count">{{ count }}</span>
+                    </div>
+                  {% endfor %}
+                {% endif %}
+              </div>
+            </div>
+          {% endif %}
+          
+          <!-- Languages Chart -->
+          {% if chart_html %}
+            <div class="chart">
+              <h2 class="chart-title"><i class="fa-solid fa-code"></i> Most Used Languages</h2>
+              {{ chart_html|safe }}
+            </div>
+          {% endif %}
+
+          <!-- Developer profile -->
+          {% if user_insights %}
+            <div class="chart">
+              <h2 class="chart-title"><i class="fa-solid fa-brain"></i> Developer Profile</h2>
+              
+              <div class="insights-grid">
+                <div class="insight-item">
+                  <div class="insight-icon">📊</div>
+                  <div class="insight-content">
+                    <span class="insight-label">Total Events:</span>
+                    <span class="insight-value">{{ user_insights.total_events }}</span>
+                  </div>
+                </div>
+
+                <div class="insight-item">
+                  <div class="insight-icon">🕐</div>
+                  <div class="insight-content">
+                    <span class="insight-label">Peak Hour:</span>
+                    <span class="insight-value">{{ user_insights.most_active_hour }}:00</span>
+                  </div>
+                </div>
+
+                <div class="insight-item">
+                  <div class="insight-icon">📅</div>
+                  <div class="insight-content">
+                    <span class="insight-label">Peak Day:</span>
+                    <span class="insight-value">{{ user_insights.most_active_day }}</span>
+                  </div>
+                </div>
+
+                <div class="insight-item">
+                  <div class="insight-icon">💻</div>
+                  <div class="insight-content">
+                    <span class="insight-label">Style:</span>
+                    <span class="insight-value">{{ user_insights.event_style }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Percentages -->
+              {% if user_insights.percentages %}
+                <div class="percentages-section">
+                  <h4>Activity Breakdown:</h4>
+                  <div class="percentage-bars">
+                    <div class="percentage-item">
+                      <span class="percentage-label">Weekend Activity</span>
+                      <div class="percentage-bar">
+                        <div class="percentage-fill" style="width: {{ user_insights.percentages.weekend }}%"></div>
+                      </div>
+                      <span class="percentage-value">{{ user_insights.percentages.weekend }}%</span>
+                    </div>
+                    
+                    <div class="percentage-item">
+                      <span class="percentage-label">Push Events</span>
+                      <div class="percentage-bar">
+                        <div class="percentage-fill push" style="width: {{ user_insights.percentages.push_events }}%"></div>
+                      </div>
+                      <span class="percentage-value">{{ user_insights.percentages.push_events }}%</span>
+                    </div>
+                  </div>
+                </div>
+              {% endif %}
+            </div>
+          {% endif %}
+
+        </div>
+        
+      {% else %}
+        <p>User not found.</p>
+      {% endif %}
+    {% endif %}
   </div>
 </body>
 </html>
+
+
+
+<!-- Red line on the code is just an editor confision not an actual error -->

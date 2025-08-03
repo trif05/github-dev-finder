@@ -1,28 +1,28 @@
 /* --------- Base --------- */
 body {
   font-family: "Inter", "Segoe UI", sans-serif;
-  background: #f9f9f9;
+  background: #f8fafc;
   margin: 0;
   padding: 40px 20px;
-  color: #333;
+  color: #2d3748;
   line-height: 1.6;
 }
 
 h1 {
   font-size: 2.2rem;
   font-weight: 600;
-  color: #111;
+  color: #1a202c;
   margin: 0;
 }
 
 /* --------- Card Container --------- */
 .card {
-  max-width: 1000px;
+  max-width: 1200px;
   background: #fff;
   border-radius: 16px;
   padding: 50px;
   margin: 0 auto;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
 }
 
 /* --------- Header --------- */
@@ -39,7 +39,7 @@ header .logo {
   display: flex;
   align-items: center;
   gap: 12px;
-  color: #005fa5;
+  color: #4299e1;
 }
 
 header .logo i {
@@ -50,16 +50,21 @@ header .logo h1 {
   font-size: 2.2rem;
   font-weight: 700;
   margin: 0;
-  color: #005fa5;
+  color: #4299e1;
 }
 
 /* --------- Header Form --------- */
 header form {
   display: flex;
   align-items: center;
-  border: 1px solid #ccc;
+  border: 2px solid #e2e8f0;
   border-radius: 8px;
   overflow: hidden;
+  transition: border-color 0.2s ease;
+}
+
+header form:focus-within {
+  border-color: #4299e1;
 }
 
 header form input[type="text"] {
@@ -72,37 +77,37 @@ header form input[type="text"] {
 }
 
 header form button {
-  background: #007acc;
+  background: #4299e1;
   border: none;
   color: #fff;
   padding: 14px 28px;
   font-weight: 500;
   cursor: pointer;
-  transition: background 0.3s, transform 0.2s;
+  transition: background 0.2s ease;
 }
 
 header form button:hover {
-  background: #005fa3;
-  transform: translateY(-2px);
+  background: #3182ce;
 }
 
 /* --------- Profile Button --------- */
 .profile_button {
   display: inline-block;
-  border: 1px solid #007acc;
-  background-color: #007acc;
+  border: 1px solid #4299e1;
+  background-color: #4299e1;
   color: #fff;
   text-decoration: none;
-  padding: 2px 5px;
+  padding: 8px 16px;
   border-radius: 6px;
   font-size: 14px;
   font-weight: 500;
-  transition: background 0.3s, color 0.3s;
+  transition: all 0.2s ease;
+  margin-bottom: 15px;
 }
 
 .profile_button:hover {
-  background-color: #005fa3;
-  border-color: #005fa3;
+  background-color: #3182ce;
+  border-color: #3182ce;
   color: #fff;
   cursor: pointer;
 }
@@ -110,7 +115,7 @@ header form button:hover {
 /* --------- Profile Section --------- */
 .profile-row {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 30px;
   margin-bottom: 40px;
 }
@@ -120,12 +125,54 @@ header form button:hover {
   height: 120px;
   border-radius: 50%;
   object-fit: cover;
-  border: 3px solid #eee;
+  border: 3px solid #e2e8f0;
 }
 
 .profile-row h2 {
   font-size: 2.2rem;
-  margin: 0;
+  margin: 0 0 10px 0;
+  color: #1a202c;
+}
+
+/* --------- Badges System --------- */
+.badges-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 15px;
+}
+
+.badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  border: 1px solid transparent;
+}
+
+.badge-primary {
+  background: #ebf8ff;
+  color: #2b6cb0;
+  border-color: #bee3f8;
+}
+
+.badge-success {
+  background: #f0fff4;
+  color: #2f855a;
+  border-color: #c6f6d5;
+}
+
+.badge-info {
+  background: #edf2f7;
+  color: #4a5568;
+  border-color: #cbd5e0;
+}
+
+.badge-warning {
+  background: #fffaf0;
+  color: #d69e2e;
+  border-color: #faf089;
 }
 
 /* --------- Info Grid Layout --------- */
@@ -137,8 +184,8 @@ header form button:hover {
 }
 
 .card > p {
-  background: #fafafa;
-  border-left: 4px solid #007acc;
+  background: #f7fafc;
+  border-left: 4px solid #4299e1;
   padding: 20px 25px;
   border-radius: 8px;
   margin: 12px 0;
@@ -147,33 +194,294 @@ header form button:hover {
 
 .card > p:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
 .card > p strong {
   display: inline-block;
   min-width: 140px;
-  color: #555;
+  color: #4a5568;
   font-weight: 600;
 }
 
-/* --------- Chart --------- */
+/* --------- Charts Grid --------- */
+.charts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 25px;
+  margin-top: 30px;
+}
+
+/* --------- Chart Containers --------- */
 .chart {
   background: #fff;
-  width: 100%;
-  max-width: 400px;
-  border: 1px solid #e0e0e0;
+  border: 1px solid #e2e8f0;
   border-radius: 12px;
-  padding: 30px;
-  margin: 30px auto;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+  padding: 25px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+  transition: transform 0.2s ease;
+}
+
+.chart:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+.chart-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #2d3748;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* --------- Events Table --------- */
+.table-container {
+  overflow-x: auto;
+}
+
+.events-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+.events-table th {
+  background: #f7fafc;
+  color: #4a5568;
+  font-weight: 600;
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 2px solid #e2e8f0;
+  font-size: 14px;
+}
+
+.events-table td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #edf2f7;
+  font-size: 14px;
+}
+
+.events-table tr:hover {
+  background: #f7fafc;
+}
+
+.event-type {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.event-type.pushevent {
+  background: #f0fff4;
+  color: #2f855a;
+}
+
+.event-type.watchevent {
+  background: #fffaf0;
+  color: #d69e2e;
+}
+
+.event-type.createevent {
+  background: #ebf8ff;
+  color: #2b6cb0;
+}
+
+.repo-name {
+  color: #4299e1;
+  font-weight: 500;
+}
+
+.event-date {
+  color: #718096;
+  font-size: 13px;
+}
+
+/* --------- Time Patterns --------- */
+.time-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.stat-item {
+  background: #f7fafc;
+  padding: 15px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.stat-label {
+  display: block;
+  font-size: 12px;
+  color: #718096;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 5px;
+}
+
+.stat-value {
+  display: block;
+  font-size: 18px;
+  font-weight: 600;
+  color: #4299e1;
+}
+
+/* --------- Activity Distribution --------- */
+.activity-distribution h4 {
+  color: #2d3748;
+  margin-bottom: 15px;
+  font-size: 14px;
+}
+
+.day-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.day-name {
+  width: 35px;
+  font-size: 12px;
+  color: #718096;
+  font-weight: 500;
+}
+
+.bar-container {
+  flex: 1;
+  height: 20px;
+  background: #edf2f7;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.bar {
+  height: 100%;
+  background: linear-gradient(90deg, #4299e1, #63b3ed);
+  border-radius: 10px;
+  transition: width 0.3s ease;
+}
+
+.day-count {
+  width: 25px;
+  text-align: right;
+  font-size: 12px;
+  color: #4a5568;
+  font-weight: 500;
+}
+
+/* --------- Insights Grid --------- */
+.insights-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.insight-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #f7fafc;
+  padding: 15px;
+  border-radius: 8px;
+}
+
+.insight-icon {
+  font-size: 24px;
+  width: 40px;
+  text-align: center;
+}
+
+.insight-content {
+  flex: 1;
+}
+
+.insight-label {
+  display: block;
+  font-size: 12px;
+  color: #718096;
+  margin-bottom: 2px;
+}
+
+.insight-value {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #2d3748;
+}
+
+/* --------- Percentages Section --------- */
+.percentages-section {
+  margin-top: 20px;
+}
+
+.percentages-section h4 {
+  color: #2d3748;
+  margin-bottom: 15px;
+  font-size: 14px;
+}
+
+.percentage-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.percentage-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.percentage-label {
+  width: 120px;
+  font-size: 12px;
+  color: #718096;
+}
+
+.percentage-bar {
+  flex: 1;
+  height: 8px;
+  background: #edf2f7;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.percentage-fill {
+  height: 100%;
+  background: #4299e1;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.percentage-fill.push {
+  background: #48bb78;
+}
+
+.percentage-value {
+  width: 40px;
+  text-align: right;
+  font-size: 12px;
+  color: #4a5568;
+  font-weight: 500;
 }
 
 /* --------- Error --------- */
 p[style*="color: red"] {
-  background: #ffeaea;
-  color: #c00 !important;
-  border-left: 4px solid #c00;
+  background: #fed7d7;
+  color: #c53030 !important;
+  border-left: 4px solid #c53030;
   padding: 16px 20px;
   border-radius: 8px;
   margin: 30px 0;
@@ -184,8 +492,12 @@ p[style*="color: red"] {
 /* --------- Responsive --------- */
 @media (max-width: 1100px) {
   .card {
-    max-width: 90%;
+    max-width: 95%;
     padding: 40px;
+  }
+  
+  .charts-grid {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -201,14 +513,7 @@ p[style*="color: red"] {
 
   header form input[type="text"] {
     width: 100%;
-  }
-
-  header form button {
-    width: 100%;
-  }
-
-  .info-grid {
-    grid-template-columns: 1fr;
+    min-width: auto;
   }
 
   .profile-row {
@@ -230,21 +535,20 @@ p[style*="color: red"] {
   .card {
     padding: 30px 20px;
   }
-}
-
-@media (max-width: 600px) {
-  header form input[type="text"] {
-    width: 100%;
-    min-width: auto;
+  
+  .charts-grid {
+    grid-template-columns: 1fr;
   }
-
-  header form button {
-    width: 100%;
+  
+  .time-stats {
+    grid-template-columns: 1fr;
   }
-}
-.chart-title {
-  font-size: 1.5rem;
-  text-align: center;
-  margin-bottom: 20px;
-  color: #005fa5;
+  
+  .insights-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .badges-container {
+    justify-content: center;
+  }
 }
