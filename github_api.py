@@ -1,7 +1,11 @@
 import requests
 from datetime import datetime
+# ← ΝΕΟ: Προσθήκη imports για το contribution graph
+from datetime import timedelta
+from collections import defaultdict
 
-GITHUB_TOKEN = "YOUR_GITHUB_API_TOKEN"  
+
+GITHUB_TOKEN = "YOUR_GITHUB_API_TOKEN"
 HEADERS = {"Authorization": f"token {GITHUB_TOKEN}"}
 
 #Phase 1 
@@ -281,4 +285,100 @@ def calculate_event_stats(username):
             "issues_events": round(issues_percentage, 1),
             "pr_events": round(pr_percentage, 1)
         }
+    }
+
+
+# ← ΝΕΟ: Contribution Graph Functions - Φτιάχνει το GitHub-style heatmap calendar
+def get_user_contributions(username):
+    """
+    Παίρνει contribution data για το GitHub contribution graph
+    Χρησιμοποιεί τα events για να φτιάξει ένα heatmap παρόμοιο με το GitHub
+    """
+    
+    # Παίρνουμε όλα τα events του user (τελευταία 90 ημέρες)
+    events = get_user_events(username)
+    if events is None:
+        return None
+    
+    # Δημιουργούμε dictionary για contributions ανά ημέρα
+    contributions_by_date = defaultdict(int)
+    
+    # Μετράμε events ανά ημέρα - κάθε event = ένα contribution
+    for event in events:
+        # Παίρνουμε μόνο την ημερομηνία (όχι την ώρα)
+        event_date = event['created_at'][:10]  # '2025-08-04'
+        contributions_by_date[event_date] += 1
+    
+    # Δημιουργούμε data για τους τελευταίους 365 ημέρες (ένας πλήρης χρόνος)
+    end_date = datetime.now()
+    start_date = end_date - timedelta(days=364)  # 365 ημέρες συνολικά
+    
+    contribution_data = []
+    current_date = start_date
+    
+    # Για κάθε ημέρα του χρόνου, δημιουργούμε ένα data point
+    while current_date <= end_date:
+        date_str = current_date.strftime('%Y-%m-%d')
+        count = contributions_by_date.get(date_str, 0)
+        
+        contribution_data.append({
+            'date': date_str,
+            'count': count,
+            'day': current_date.weekday(),  # 0=Monday, 6=Sunday
+            'week': int((current_date - start_date).days / 7),  # Εβδομάδα του χρόνου
+            'month': current_date.strftime('%b'),  # Σύντομο όνομα μήνα
+            'day_of_month': current_date.day
+        })
+        
+        current_date += timedelta(days=1)
+    
+    # Υπολογίζουμε συνολικά contributions
+    total_contributions = sum(contributions_by_date.values())
+    
+    return {
+        'data': contribution_data,
+        'total_contributions': total_contributions,
+        'max_contributions': max(contributions_by_date.values()) if contributions_by_date else 0
+    }
+
+
+# ← ΝΕΟ: Contribution Statistics - Υπολογίζει streaks και άλλα stats
+def get_contribution_stats(username):
+    """
+    Επιστρέφει statistics για το contribution graph (streaks, active days, κτλ)
+    """
+    contributions = get_user_contributions(username)
+    if contributions is None:
+        return None
+    
+    data = contributions['data']
+    
+    # Υπολογίζουμε current streak (συνεχόμενες ημέρες με contributions από σήμερα)
+    current_streak = 0
+    longest_streak = 0
+    temp_streak = 0
+    
+    # Αρχίζουμε από το τέλος (σήμερα) και πάμε προς τα πίσω
+    for day in reversed(data):
+        if day['count'] > 0:
+            if current_streak == 0:  # Αν μόλις αρχίσαμε να μετράμε
+                current_streak = temp_streak + 1
+            temp_streak += 1
+            longest_streak = max(longest_streak, temp_streak)
+        else:
+            if current_streak == 0:  # Αν δεν έχουμε αρχίσει ακόμα current streak
+                temp_streak = 0
+            else:
+                temp_streak = 0
+    
+    # Υπολογίζουμε ημέρες με contributions
+    active_days = len([day for day in data if day['count'] > 0])
+    
+    return {
+        'total_contributions': contributions['total_contributions'],
+        'current_streak': current_streak,
+        'longest_streak': longest_streak,
+        'active_days': active_days,
+        'contribution_data': data,
+        'max_contributions': contributions['max_contributions']
     }
