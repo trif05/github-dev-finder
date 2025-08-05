@@ -8,10 +8,10 @@ GitHub DevFinder is a web application built with **Flask** that allows you to se
 
 ## 📸 Screenshots
 
-![Home Page](https://raw.githubusercontent.com/trif05/github-dev-finder/84122719a6cde127160768f74fb772a419ee362a/images/Screenshot1.png)
-![Top part](https://raw.githubusercontent.com/trif05/github-dev-finder/66df70fabcdfc025089047e6e8b583aa658fe6d9/images/Screenshot2.png)
-![Mid part](https://raw.githubusercontent.com/trif05/github-dev-finder/66df70fabcdfc025089047e6e8b583aa658fe6d9/images/Screenshot3.png)
-![Lower part](https://raw.githubusercontent.com/trif05/github-dev-finder/66df70fabcdfc025089047e6e8b583aa658fe6d9/images/Screenshot4.png)
+![Home Page](https://raw.githubusercontent.com/trif05/github-dev-finder/main/images/Screenshot1.png)  
+![Top part](https://raw.githubusercontent.com/trif05/github-dev-finder/main/images/Screenshot2.png)  
+![Mid part](https://raw.githubusercontent.com/trif05/github-dev-finder/main/images/Screenshot3.png)  
+![Lower part](https://raw.githubusercontent.com/trif05/github-dev-finder/main/images/Screenshot4.png) part](https://raw.githubusercontent.com/trif05/github-dev-finder/66df70fabcdfc025089047e6e8b583aa658fe6d9/images/Screenshot4.png)
 
 ---
 
