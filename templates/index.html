@@ -3,47 +3,63 @@
 <head>
   <meta charset="UTF-8" />
   <title>GitHub DevFinder</title>
+  <!-- Google Fonts import for the Inter font family with different weights -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Font Awesome icons library for various icons used throughout the page -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <!-- Custom CSS file using Flask's url_for function to generate proper paths -->
   <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
 </head>
 
 <body>
+  <!-- Main container card that wraps all content -->
   <div class="card">
+    <!-- Header section containing the logo and search form -->
     <header>
       <div class="logo">
         <i class="fa-solid fa-rocket"></i>
         <h1>GitHub DevFinder</h1>
       </div>
+      <!-- Search form that submits via POST method to the Flask backend -->
       <form method="POST">
         <input type="text" name="username" placeholder="Enter GitHub username" required>
         <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
       </form>
     </header>
 
+    <!-- Conditional block that only displays if a search has been performed -->
     {% if searched %}
+      <!-- Inner conditional that checks if user data was successfully retrieved -->
       {% if user_data %}
         <hr>
+        <!-- Profile header row containing avatar and basic user info -->
         <div class="profile-row">
+          <!-- User avatar image pulled from GitHub API response -->
           <img src="{{ user_data.avatar_url }}" alt="Avatar" width="120">
           <div class="profile-info">
+            <!-- Username displayed from API data -->
             <h2>{{ user_data.login }}</h2>
+            <!-- Link to the actual GitHub profile page, opens in new tab -->
             <a href="{{ user_data.html_url }}" class="profile_button" target="_blank">
               <i class="fa-brands fa-github">&nbsp;&nbsp;</i>View on GitHub
             </a>
             
-            <!-- Developer Insights Badges -->
+            <!-- Developer insights badges section, only shows if insights data exists -->
             {% if user_insights %}
               <div class="badges-container">
+                <!-- Developer type badge based on activity analysis -->
                 {% if user_insights.developer_type %}
                   <span class="badge badge-primary">🦉 {{ user_insights.developer_type }}</span>
                 {% endif %}
+                <!-- Day pattern badge showing when user is most active -->
                 {% if user_insights.day_pattern %}
                   <span class="badge badge-success">📅 {{ user_insights.day_pattern }}</span>
                 {% endif %}
+                <!-- Activity level badge indicating how active the user is -->
                 {% if user_insights.activity_level %}
                   <span class="badge badge-info">⚡ {{ user_insights.activity_level }}</span>
                 {% endif %}
+                <!-- Special pattern badge for unique activity patterns -->
                 {% if user_insights.special_pattern %}
                   <span class="badge badge-warning">✨ {{ user_insights.special_pattern }}</span>
                 {% endif %}
@@ -52,23 +68,27 @@
           </div>
         </div>
 
+        <!-- User profile details section with icons and fallback values -->
+        <!-- Each field uses the 'or' operator to display 'N/A' if the field is empty -->
         <p><strong><i class="fa-solid fa-signature"></i>&nbsp;&nbsp;Name:</strong> {{ user_data.name or "N/A" }}</p>
         <p><strong><i class="fa-solid fa-clipboard"></i>&nbsp;&nbsp;Bio:</strong> {{ user_data.bio or "N/A" }}</p>
         <p><strong><i class="fa-solid fa-building"></i>&nbsp;&nbsp;Company:</strong> {{ user_data.company or "N/A" }}</p>
         <p><strong><i class="fa-solid fa-location-dot"></i>&nbsp;&nbsp;Location:</strong> {{ user_data.location or "N/A" }}</p>
+        <!-- These fields always have numeric values so no fallback needed -->
         <p><strong><i class="fa-solid fa-box-open"></i>&nbsp;&nbsp;Public Repos:</strong> {{ user_data.public_repos }}</p>
         <p><strong><i class="fa-solid fa-users"></i>&nbsp;&nbsp;Followers:</strong> {{ user_data.followers }}</p>
         <p><strong><i class="fa-regular fa-handshake"></i>&nbsp;&nbsp;Following:</strong> {{ user_data.following }}</p>
 
         <hr>
 
-        <!-- Charts Grid Container -->
+        <!-- Main charts and data visualization grid container -->
         <div class="charts-grid">
 
-          <!-- Recent Activity Table -->
+          <!-- Recent activity events table section -->
           {% if user_events %}
             <div class="chart">
               <h2 class="chart-title"><i class="fa-solid fa-clock"></i> Recent Activity</h2>
+              <!-- Scrollable table container for better mobile experience -->
               <div class="table-container">
                 <table class="events-table">
                   <thead>
@@ -79,10 +99,13 @@
                     </tr>
                   </thead>
                   <tbody>
+                    <!-- Loop through first 10 events to avoid overwhelming the display -->
                     {% for event in user_events[:10] %}
                       <tr>
                         <td>
+                          <!-- Dynamic event type styling with appropriate icons -->
                           <span class="event-type {{ event.type.lower() }}">
+                            <!-- Conditional icon display based on GitHub event type -->
                             {% if event.type == 'PushEvent' %}
                               <i class="fa-solid fa-code-commit"></i> Push
                             {% elif event.type == 'WatchEvent' %}
@@ -92,11 +115,14 @@
                             {% elif event.type == 'IssuesEvent' %}
                               <i class="fa-solid fa-exclamation-circle"></i> Issue
                             {% else %}
+                              <!-- Fallback for other event types, removes 'Event' suffix -->
                               <i class="fa-solid fa-circle"></i> {{ event.type.replace('Event', '') }}
                             {% endif %}
                           </span>
                         </td>
+                        <!-- Repository name, splits full path and shows only repo name -->
                         <td class="repo-name">{{ event.repo_name.split('/')[-1] }}</td>
+                        <!-- Date formatting to show only YYYY-MM-DD part -->
                         <td class="event-date">{{ event.created_at[:10] }}</td>
                       </tr>
                     {% endfor %}
@@ -106,13 +132,14 @@
             </div>
           {% endif %}
 
-          <!-- Time Patterns -->
+          <!-- Activity patterns and timing analysis section -->
           {% if user_createdat %}
             <div class="chart">
               <h2 class="chart-title"><i class="fa-solid fa-chart-line"></i> Activity Patterns</h2>
               
-              <!-- Most Active Times -->
+              <!-- Key statistics about most active times -->
               <div class="time-stats">
+                <!-- Find and display the hour with most activity -->
                 {% if user_createdat.hours %}
                   {% set most_active_hour = user_createdat.hours.keys()|list|max %}
                   <div class="stat-item">
@@ -121,6 +148,7 @@
                   </div>
                 {% endif %}
                 
+                <!-- Display the most active day of the week -->
                 {% if user_createdat.days %}
                   {% set most_active_day = user_createdat.days.keys()|list|first %}
                   <div class="stat-item">
@@ -130,16 +158,20 @@
                 {% endif %}
               </div>
 
-              <!-- Activity Distribution -->
+              <!-- Visual bar chart showing activity distribution across days -->
               <div class="activity-distribution">
                 <h4>Weekly Distribution:</h4>
                 {% if user_createdat.days %}
+                  <!-- Loop through each day and create a proportional bar -->
                   {% for day, count in user_createdat.days.items() %}
                     <div class="day-bar">
+                      <!-- Abbreviated day name for compact display -->
                       <span class="day-name">{{ day[:3] }}</span>
                       <div class="bar-container">
+                        <!-- Bar width calculated as percentage of maximum day activity -->
                         <div class="bar" style="width: {{ (count / user_createdat.days.values()|max * 100)|round }}%"></div>
                       </div>
+                      <!-- Actual count number for this day -->
                       <span class="day-count">{{ count }}</span>
                     </div>
                   {% endfor %}
@@ -148,20 +180,23 @@
             </div>
           {% endif %}
           
-          <!-- Languages Chart -->
+          <!-- Programming languages chart generated by backend -->
           {% if chart_html %}
             <div class="chart">
               <h2 class="chart-title"><i class="fa-solid fa-code"></i> Most Used Languages</h2>
+              <!-- Raw HTML chart content from Flask backend, marked as safe -->
               {{ chart_html|safe }}
             </div>
           {% endif %}
 
-          <!-- Developer profile -->
+          <!-- Comprehensive developer profile insights section -->
           {% if user_insights %}
             <div class="chart">
               <h2 class="chart-title"><i class="fa-solid fa-brain"></i> Developer Profile</h2>
               
+              <!-- Grid layout for key developer metrics -->
               <div class="insights-grid">
+                <!-- Total events counter with icon -->
                 <div class="insight-item">
                   <div class="insight-icon">📊</div>
                   <div class="insight-content">
@@ -170,6 +205,7 @@
                   </div>
                 </div>
 
+                <!-- Peak activity hour display -->
                 <div class="insight-item">
                   <div class="insight-icon">🕐</div>
                   <div class="insight-content">
@@ -178,6 +214,7 @@
                   </div>
                 </div>
 
+                <!-- Most active day of the week -->
                 <div class="insight-item">
                   <div class="insight-icon">📅</div>
                   <div class="insight-content">
@@ -186,6 +223,7 @@
                   </div>
                 </div>
 
+                <!-- Development style based on activity patterns -->
                 <div class="insight-item">
                   <div class="insight-icon">💻</div>
                   <div class="insight-content">
@@ -195,22 +233,26 @@
                 </div>
               </div>
 
-              <!-- Percentages -->
+              <!-- Percentage breakdowns with visual progress bars -->
               {% if user_insights.percentages %}
                 <div class="percentages-section">
                   <h4>Activity Breakdown:</h4>
                   <div class="percentage-bars">
+                    <!-- Weekend activity percentage with visual bar -->
                     <div class="percentage-item">
                       <span class="percentage-label">Weekend Activity</span>
                       <div class="percentage-bar">
+                        <!-- Bar fill width set dynamically based on percentage -->
                         <div class="percentage-fill" style="width: {{ user_insights.percentages.weekend }}%"></div>
                       </div>
                       <span class="percentage-value">{{ user_insights.percentages.weekend }}%</span>
                     </div>
                     
+                    <!-- Push events percentage with different styling -->
                     <div class="percentage-item">
                       <span class="percentage-label">Push Events</span>
                       <div class="percentage-bar">
+                        <!-- Special 'push' class for different color scheme -->
                         <div class="percentage-fill push" style="width: {{ user_insights.percentages.push_events }}%"></div>
                       </div>
                       <span class="percentage-value">{{ user_insights.percentages.push_events }}%</span>
@@ -224,6 +266,7 @@
         </div>
         
       {% else %}
+        <!-- Error message displayed when user is not found -->
         <p style="color: red;">User not found.</p>
       {% endif %}
     {% endif %}
