@@ -97,7 +97,7 @@ Then go to: **http://127.0.0.1:5000**
 
 ---
 
-## 👤 Contact
+## 👤 Contact me
 
 Created by **Thodoris Trifonopoulos** – feel free to reach out via [GitHub](https://github.com/trif05)
 

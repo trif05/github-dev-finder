@@ -105,4 +105,6 @@ def index():
 # Run the Flask application only if this file is executed directly
 if __name__ == "__main__":
     # Start the Flask development server
-    app.run(debug=True)
+    app.run()
+
+# Thodoris Trifonopoulos dev finder

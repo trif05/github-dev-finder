@@ -308,3 +308,4 @@ def calculate_event_stats(username):
             "pr_events": round(pr_percentage, 1)
         }
     }
+# Thodoris Trifonopoulos dev finder
