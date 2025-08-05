@@ -6,10 +6,10 @@ GitHub DevFinder is a web application built with **Flask** that allows you to se
 
 ## 📸 Screenshots
 
-![Home Page](images/Screenshot1.png)  
-![Top part](images/Screenshot2.png)  
-![Mid part](images/Screenshot3.png)  
-![Lower part](images/Screenshot4.png)
+![Home Page](/Users/thodoristrifonopoulos/Desktop/projects/dev_finder/github-dev-finder/images/Screenshot1.png)  
+![Top part](/Users/thodoristrifonopoulos/Desktop/projects/dev_finder/github-dev-finder/images/Screenshot2.png)  
+![Mid part](/Users/thodoristrifonopoulos/Desktop/projects/dev_finder/github-dev-finder/images/Screenshot3.png)  
+![Lower part](/Users/thodoristrifonopoulos/Desktop/projects/dev_finder/github-dev-finder/images/Screenshot1.png)
 
 ---
 
